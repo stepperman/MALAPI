@@ -45,8 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Anime.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="MyAnimeListAPI.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="NetHelper.cs" />
+    <Compile Include="AnimeParser.cs" />
+    <Compile Include="PeopleParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

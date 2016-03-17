@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MALAPI;
+using System.Diagnostics;
 
 namespace MalAPITest
 {
@@ -17,11 +18,8 @@ namespace MalAPITest
         static async Task Run()
         {
             MyAnimeListAPI malap = new MyAnimeListAPI();
-            Anime anime = await malap.GetAnime("31043");
 
-            Console.WriteLine(anime.Title[0]);
-            Console.WriteLine(anime.Synonyms[0]);
-            Console.WriteLine(anime.EnglishTitle[0]);
+            var person = await malap.FindPerson("Hayao Miyazaki"); 
 
             Console.ReadLine();
         }

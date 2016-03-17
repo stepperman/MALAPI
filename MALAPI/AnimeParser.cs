@@ -5,18 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Net;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace MALAPI
 {
-    public sealed class Parser
+    public sealed partial class Parser
     {
         /// <summary>
         /// Parse HTML link and crawl it.
         /// </summary>
         /// <param name="html"></param>
         /// <returns>an anime object populated with the details of that page.</returns>
-        private async Task<Anime> Parse(string html)
+        private async Task<Anime> AnimeParser(string html)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
             Anime anime = new Anime();
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
@@ -99,6 +104,9 @@ namespace MALAPI
             extracted = leftColumn.SelectSingleNode("//span[text()=\"Type:\"]/../a");
             anime.Type = extracted.InnerText.Trim();
 
+            stopwatch.Stop();
+            await Task.Delay(0);
+            Console.WriteLine($"Time to extract web page: {stopwatch.ElapsedMilliseconds}");
             return anime;
         }
         
@@ -109,11 +117,13 @@ namespace MALAPI
         /// <returns>an anime object</returns>
         public async Task<Anime> GetAnime(string id)
         {
-            using (WebClient client = new WebClient())
-            {
-                var htmlResponse = client.DownloadString($"http://myanimelist.net/anime/{id}/");
-                return await Parse(htmlResponse);
-            }
+            return await AnimeParser(NetHelper.Get($"http://myanimelist.net/anime/{id}.php"));
+        }
+
+        public async Task<Anime> GetAnimeMALURL(string url)
+        {
+            url = Regex.Match(url, "myanimelist.net/anime/[0-9]{1,9}").ToString();
+            return await AnimeParser(NetHelper.Get($"http://{url}"));
         }
     }
 }
