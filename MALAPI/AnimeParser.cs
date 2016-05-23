@@ -19,9 +19,6 @@ namespace MALAPI
         /// <returns>an anime object populated with the details of that page.</returns>
         private async Task<Anime> AnimeParser(string html)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            
             Anime anime = new Anime();
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
@@ -35,28 +32,37 @@ namespace MALAPI
             anime.Title = title;
 
             //Get English Title.
-            extracted = leftColumn.SelectSingleNode("//span[text()=\"English:\"]").NextSibling;
-            var englishTitle = extracted.InnerText.Replace("\n", "").Split(',');
-            anime.EnglishTitle = englishTitle;
-            for (int i = 0; i < englishTitle.Length; i++)
+            extracted = leftColumn.SelectSingleNode("//span[text()=\"English:\"]");
+            if (extracted != null)
             {
-                englishTitle[i] = englishTitle[i].Trim();
+                extracted = extracted.NextSibling;
+                var englishTitle = extracted.InnerText.Replace("\n", "").Split(',');
+                anime.EnglishTitle = englishTitle;
+                for (int i = 0; i < englishTitle.Length; i++)
+                {
+                    englishTitle[i] = englishTitle[i].Trim();
+                }
             }
+
             //Get Synonyms
-            extracted = leftColumn.SelectSingleNode("//span[text()=\"Synonyms:\"]").NextSibling;
-            var synonyms = extracted.InnerText.Replace("\n", "").Split(',');
-            for (int i = 0; i < synonyms.Length; i++)
+            extracted = leftColumn.SelectSingleNode("//span[text()=\"Synonyms:\"]");
+            if (extracted != null)
             {
-                synonyms[i] = synonyms[i].Trim();
+                extracted = extracted.NextSibling;
+                var synonyms = extracted.InnerText.Replace("\n", "").Split(',');
+                for (int i = 0; i < synonyms.Length; i++)
+                {
+                    synonyms[i] = synonyms[i].Trim();
+                }
+                anime.Synonyms = synonyms;
             }
-            anime.Synonyms = synonyms;
 
             //Get synopsis
             extracted = htmlDoc.DocumentNode.SelectSingleNode("//span[@itemprop=\"description\"]");
             anime.Synopsis = extracted.InnerText;
 
             //Get Poster
-            extracted = leftColumn.SelectSingleNode("//img");
+            extracted = leftColumn.SelectSingleNode("//td/div/div/a/img");
             anime.PosterLink = extracted.Attributes["src"].Value;
 
             //Get Score
@@ -103,10 +109,8 @@ namespace MALAPI
             //Get Type
             extracted = leftColumn.SelectSingleNode("//span[text()=\"Type:\"]/../a");
             anime.Type = extracted.InnerText.Trim();
-
-            stopwatch.Stop();
+            
             await Task.Delay(0);
-            Console.WriteLine($"Time to extract web page: {stopwatch.ElapsedMilliseconds}");
             return anime;
         }
         

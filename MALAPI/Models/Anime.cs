@@ -21,7 +21,5 @@ namespace MALAPI
         public string Status;
         public ushort Episodes;
         public double Score;
-
-
     }
 }
