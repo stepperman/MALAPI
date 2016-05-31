@@ -100,7 +100,7 @@ namespace MALAPI
 
             //Get episodes
             extracted = leftColumn.SelectSingleNode("//span[text()=\"Episodes:\"]").NextSibling;
-            anime.Episodes = ushort.Parse(extracted.InnerText.Trim());
+            ushort.TryParse(extracted.InnerText.Trim(), out anime.Episodes);
 
             //Get Aired Time
             extracted = leftColumn.SelectSingleNode("//span[text()=\"Aired:\"]").NextSibling;

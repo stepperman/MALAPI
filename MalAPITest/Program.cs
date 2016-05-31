@@ -19,7 +19,7 @@ namespace MalAPITest
         {
             MyAnimeListAPI malap = new MyAnimeListAPI();
 
-            var person = await malap.GetAnimeMalLink("http://myanimelist.net/anime/1535/Death_Note?q=Death%20Note"); 
+            var person = await malap.GetAnimeMalLink("http://myanimelist.net/anime/21/One_Piece"); 
 
             Console.ReadLine();
         }
